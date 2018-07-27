@@ -6,3 +6,4 @@ data/signals
 utils/opensmile
 icmi_results
 results
+__pycache__ 
