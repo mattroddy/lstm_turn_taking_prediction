@@ -8,21 +8,21 @@
 	rm hcrcmaptask.nxtformatv2-1.zip
 	cd ..
 
-) Split the audio:
+3) Split the audio:
 	bash script/split_channels.sh
 
-) Download opensmile from https://audeering.com/technology/opensmile/#download and extract into lstm_turn_taking_prediction/utils. Then replace config files with modified ones: (note: config files have been modified to use a 50ms step size, not use smoothing, and adopt the left-alignment convention)
+4) Download opensmile from https://audeering.com/technology/opensmile/#download and extract into lstm_turn_taking_prediction/utils. Then replace config files with modified ones: (note: config files have been modified to use a 50ms step size, not use smoothing, and adopt the left-alignment convention)
 	rm -r utils/opensmile-2.3.0/config
 	mv -r utils/config /utils/opensmile-2.3.0/
 
-) Extract gemaps features and voice activity annotations:
+5) Extract gemaps features and voice activity annotations:
 	python scripts/extract_gemaps.py
 	python scripts/prepare_gemaps.py
 	python scripts/get_VA_annotations.py
 	python scripts/get_word_annotations.py
 	python scripts/prepare_fast_data_ling.py
 
-) Extract evaluation metric datasets
+6) Extract evaluation metric datasets
 	python scripts/find_pauses.py
 	python scripts/find_overlaps.py
 	python scripts/find_onsets.py
