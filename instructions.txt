@@ -1,0 +1,32 @@
+1) git clone https://github.com/mattroddy/lstm_turn_taking_prediction
+
+2) Download the maptask corpus audio data from http://groups.inf.ed.ac.uk/maptask/maptasknxt.html by running the wget.sh script obtained from the site. Run the script from within the lstm_turn_taking_prediction/data/ folder:
+	cd lstm_turn_taking_prediction/data
+	sh 'maptaskBuild-xxxxx.wget.sh'
+	wget http://groups.inf.ed.ac.uk/maptask/hcrcmaptask.nxtformatv2-1.zip
+	unzip hcrcmaptask.nxtformatv2-1.zip
+	rm hcrcmaptask.nxtformatv2-1.zip
+	cd ..
+
+) Split the audio:
+	bash script/split_channels.sh
+
+) Download opensmile from https://audeering.com/technology/opensmile/#download and extract into lstm_turn_taking_prediction/utils. Then replace config files with modified ones: (note: config files have been modified to use a 50ms step size, not use smoothing, and adopt the left-alignment convention)
+	rm -r utils/opensmile-2.3.0/config
+	mv -r utils/config /utils/opensmile-2.3.0/
+
+) Extract gemaps features and voice activity annotations:
+	python scripts/extract_gemaps.py
+	python scripts/prepare_gemaps.py
+	python scripts/get_VA_annotations.py
+	python scripts/get_word_annotations.py
+	python scripts/prepare_fast_data_ling.py
+
+) Extract evaluation metric datasets
+	python scripts/find_pauses.py
+	python scripts/find_overlaps.py
+	python scripts/find_onsets.py
+
+
+At this point a model can be trained and tested by running run_json.py. To reproduce the main results in [icmi paper] run 'icmi_18_results.py'. This will reproduce the following rows from Table 1: (1)(2)(4)(5)(11)(13). This should take several hours on a modern computer with a GTX1080 GPU.
+Note: you need to set the path to your python environment in the icmi_18_results.py file.
