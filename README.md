@@ -6,12 +6,12 @@ Pytorch implementation for two papers:
 2. [Investigating Speech Features for Continuous Turn-Taking Prediction
 Using LSTMs](https://arxiv.org/pdf/1806.11461.pdf) (INTERSPEECH '18)
 
-<p align="center"><img width="70%" src="img/multiscale_rnn_fixed.png" /></p>
+<p align="center"><img width="85%" src="img/multiscale_rnn_fixed.png" /></p>
 
 
 The supplied code is designed to reproduce the main results from [1] that show the utility of using the multiscale approach. The code can potentially be adapted to reproduce other results from both papers. It can also be used to investigate other user-defined feature-sets and architectures. I hope it is useful! Feel free to contact me if you find any errors or have any queries. Please note that it is still a work in progress.
 
-####Requirements: 
+## Requirements: 
 
 - Linux
 - PyTorch v>0.3.0
@@ -19,7 +19,7 @@ The supplied code is designed to reproduce the main results from [1] that show t
 - Sox 
 - OpenSmile-2.3.0
 
-###Setup
+## Setup
 
 Download the repository.
  ```bash
@@ -61,7 +61,8 @@ python scripts/find_overlaps.py
 python scripts/find_onsets.py
 ```
 
-##Running the code
+## Running the code
+
 At this point a model can be trained and tested by running:
 ```bash
 python run_json.py 
@@ -71,7 +72,7 @@ To reproduce the main results in [1] set the path to your python environment in 
 ```bash
 python icmi_18_results.py 
 ```
-This will reproduce the following rows from Table 1: (1)(2)(4)(5)(11)(13). This should take several hours on a modern computer with a GTX1080 GPU.
+This will reproduce the following rows from Table 1: 1,2,4,5,11,13. This should take several hours on a modern computer with a GTX1080 GPU.
 
 
 
