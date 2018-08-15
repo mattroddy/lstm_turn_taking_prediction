@@ -36,13 +36,13 @@ cd ..
 ```
 Split the audio channels:
  ```bash
-bash scripts/split_channels.sh
+sh scripts/split_channels.sh
 ```
 
 Download opensmile from (https://audeering.com/technology/opensmile/#download) and extract into lstm_turn_taking_prediction/utils. Then replace config files with modified ones: (note: config files have been modified to use a 50ms step size, not use smoothing, and adopt the left-alignment convention)
  ```bash
 rm -r utils/opensmile-2.3.0/config
-mv -r utils/config /utils/opensmile-2.3.0/
+mv utils/config utils/opensmile-2.3.0/
 ```
 
 Extract gemaps features and voice activity annotations:
