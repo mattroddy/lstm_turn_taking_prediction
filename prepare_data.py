@@ -1,0 +1,18 @@
+import os
+
+os.system('python scripts/extract_gemaps.py 0')
+os.system('python scripts/extract_gemaps.py 1')
+os.system('python scripts/prepare_gemaps.py 0')
+os.system('python scripts/prepare_gemaps.py 1')
+os.system('python scripts/prepare_fast_data_acous.py')
+os.system('python scripts/get_VA_annotations.py')
+os.system('python scripts/get_vocab.py')
+os.system('python scripts/get_word_annotations.py 0')
+os.system('python scripts/get_word_annotations.py 1')
+os.system('python scripts/get_averaged_annotations.py 0')
+os.system('python scripts/get_averaged_annotations.py 1')
+os.system('python scripts/prepare_fast_data_ling.py 0')
+os.system('python scripts/prepare_fast_data_ling.py 1')
+os.system('python scripts/find_pauses.py')
+os.system('python scripts/find_overlaps.py')
+os.system('python scripts/find_onsets.py')

@@ -8,64 +8,25 @@ import h5py
 from itertools import zip_longest
 import time as t
 import multiprocessing
-import sys
 
-# load data: hold_shift, onsets, overlaps
-# structure: hold_shift.hdf5/50ms-250ms-500ms/hold_shift-stats/seq_num/g_f_predict/[index,i]
-num_workers = 4
-data_select = 0
+# takes about 15 mins for 10ms gemaps
 
-# %% Settings
-if len(sys.argv)==2:
-    speed_setting = int(sys.argv[1])
-else:
-    speed_setting = 0 
-
-
-if speed_setting == 0:  # regular/fast_irregular 50ms
-    max_len = 1
-    annotations_dir = './data/extracted_annotations/voice_activity'
-    time_scale_folder = 'words_advanced_50ms_averaged'
-    output_name = 'words_split_50ms'
-    features_list = ['word']
-
-elif speed_setting == 1:  # regular 10ms
-    max_len = 2
-    annotations_dir = './data/extracted_annotations/voice_activity' # for chunking into 50ms chunks
-    time_scale_folder = 'words_advanced_10ms_averaged'
-    output_name = 'words_split_10ms_5_chunked'
-    features_list = ['word']
-
-elif speed_setting == 2:  # irregular 50ms
-    max_len = 2
-    annotations_dir = './data/extracted_annotations/voice_activity'
-    time_scale_folder = 'words_advanced_50ms_raw'
-    output_name = 'words_split_irreg_50ms'
-    # features_list = ['frameTimes', 'word']
-    features_list = ['word']
-# todo: irregular 10ms
-
-time_label_select = 2
-file_list = list(pd.read_csv('./data/splits/complete.txt', header=None, dtype=str)[0])
-
-
-# %% Funcs
 # load data: hold_shift, onsets, overlaps
 # structure: hold_shift.hdf5/50ms-250ms-500ms/hold_shift-stats/seq_num/g_f_predict/[index,i]
 if 'of_split' in locals():
-    if isinstance(of_split, h5py.File):  # Just HDF5 files
+    if isinstance(of_split, h5py.File):   # Just HDF5 files
         try:
             of_split.close()
         except:
-            pass  # Was already closed
+            pass # Was already closed
+
 
 
 def find_max_len(df_list):
     max_len = 0
     for df in df_list:
-        max_len = max(max_len, len(df))
+        max_len=max(max_len,len(df))
     return max_len
-
 
 def fill_array(arr, seq):
     if arr.ndim == 1:
@@ -78,19 +39,44 @@ def fill_array(arr, seq):
     else:
         for subarr, subseq in zip_longest(arr, seq, fillvalue=()):
             fill_array(subarr, subseq)
+            
+data_select_dict = {0:['f','g'],
+                    1:['c1','c2']}
+time_label_select_dict = {0:'frame_time', # gemaps
+                    1:'timestamp'} # openface
+#%% Settings
+
+num_workers = 4
+data_select = 0
+time_label_select = 0
+annotations_dir = './data/extracted_annotations/voice_activity'
+file_list = list(pd.read_csv('./data/splits/complete.txt',header=None,dtype=str)[0])
+
+#time_scale_folder = 'open_face_features_58hz'
+#selected_set = 'set_4'
+#output_name = 'of_split_'+selected_set
 
 
-data_select_dict = {0: ['f', 'g'],
-                    1: ['c1', 'c2']}
-time_label_select_dict = {0: 'frame_time',  # gemaps
-                          1: 'timestamp',  # openface
-                          2: 'frameTimes'}  # annotations
+time_scale_folder = 'gemaps_features_processed_10ms'
+selected_set = 'znormalized'
+output_name = 'gemaps_split'
 
-if os.path.exists('./data/datasets/' + output_name + '.hdf5'):
-    os.remove('./data/datasets/' + output_name + '.hdf5')
 
-out_split = h5py.File('./data/datasets/' + output_name + '.hdf5', 'w')
-folder_path = os.path.join('./data/extracted_annotations', time_scale_folder)
+timings = ['frame_time']
+gemaps_features_list = [ 'F0semitoneFrom27.5Hz', 'jitterLocal', 'F1frequency',
+       'F1bandwidth', 'F2frequency', 'F3frequency', 'Loudness',
+       'shimmerLocaldB', 'HNRdBACF', 'alphaRatio', 'hammarbergIndex',
+       'spectralFlux', 'slope0-500', 'slope500-1500', 'F1amplitudeLogRelF0',
+       'F2amplitudeLogRelF0', 'F3amplitudeLogRelF0', 'mfcc1', 'mfcc2', 'mfcc3',
+       'mfcc4']
+features_list = timings + gemaps_features_list
+
+#if os.path.exists('./datasets/'+output_name+'.hdf5'):
+#    os.remove('./datasets/'+output_name+'.hdf5')
+
+out_split = h5py.File('./data/datasets/'+output_name+'.hdf5','w')
+folder_path = os.path.join('./data/signals',time_scale_folder,selected_set)
+
 
 # structure: of_split/file/[f,g][x,x_i]/feature/matrix[T,4]
 #%% run
@@ -125,13 +111,11 @@ def file_run(file_name):
             data_dict_g['x_i'][feature_name][ind,:len(data_g_split)] = 1 
             
     data_fg = {file_name:{data_select_dict[data_select][0]:data_dict_f,data_select_dict[data_select][1]:data_dict_g}}
-
     return data_fg
-         
+
 if __name__=='__main__':
     p = multiprocessing.Pool(num_workers)
     results = p.map(file_run,(file_list),chunksize=1)
-#     file_run(file_list[0])
     for file_name,data_fg in zip(file_list,results):
         for f_g in data_select_dict[data_select]:
             for x_type in ['x','x_i']:
