@@ -27,7 +27,7 @@ if plat == 'arch':
     print('platform: arch')
     py_env = '/home/matt/anaconda3/bin/python'
 elif plat == 'debian':
-    py_env = '../../../anaconda3/bin/python'
+    py_env = '../../anaconda3/bin/python'
 else:
     print('platform: ' + plat)
     py_env = '/home/mroddy/anaconda3/envs/py36/bin/python'

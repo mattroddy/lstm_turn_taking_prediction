@@ -14,6 +14,8 @@ path_to_extracted_annotations='./data/extracted_annotations/voice_activity/'
 files_feature_list = os.listdir(path_to_features)
 files_annotation_list = list()
 files_output_list = list()
+if not(os.path.exists(path_to_extracted_annotations)):
+    os.makedirs(path_to_extracted_annotations)
 for file in files_feature_list:
     base_name = os.path.basename(file)
     files_annotation_list.append(os.path.splitext(base_name)[0]+'.timed-units.xml')
@@ -34,15 +36,6 @@ for i in range(0,len(files_feature_list)):
     for atype in e.findall('tu'):
         annotation_data.append((float(atype.get('start')), float(atype.get('end'))))
         
-#    indx = 1
-#    merge_count = 0
-#    while indx < len(annotation_data):
-#        if annotation_data[indx][0] - annotation_data[indx-1][1] < 0.180:
-#            annotation_data[indx-1] = (annotation_data[indx-1][0],annotation_data[indx][1])
-#            annotation_data.pop(indx)
-#            merge_count += 1
-#        else:
-#            indx += 1
     
     # Then remove any detections less than 90ms as per ref above
     indx = 1
