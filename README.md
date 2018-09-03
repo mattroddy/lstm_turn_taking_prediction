@@ -2,7 +2,7 @@
 
 Pytorch implementation for two papers:
 
-1. Multimodal Continuous Turn-Taking Prediction Using Multiscale RNNs (ICMI '18)
+1. [Multimodal Continuous Turn-Taking Prediction Using Multiscale RNNs](https://arxiv.org/pdf/1808.10785.pdf) (ICMI '18)
 2. [Investigating Speech Features for Continuous Turn-Taking Prediction
 Using LSTMs](https://arxiv.org/pdf/1806.11461.pdf) (INTERSPEECH '18)
 
